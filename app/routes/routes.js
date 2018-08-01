@@ -4,9 +4,9 @@ var date, bidang, nomorSurat, perihal, pic, file;
 // routes/salman_tracking
 module.exports = function(app, db) {
   //CREATE temp
-  app.post('/presensi-forum-bidikmisi', (req, res) => {
+  app.post('/:collectionName', (req, res) => {
     var temp = req.body;
-    db.collection('presensi-forum-bidikmisi').insert(temp, function (err, result) {
+    db.collection(req.params.collectionName).insert(temp, function (err, result) {
       if (err) throw err;
       // console.log("res: " + JSON.stringify(result)); // debug
       res.json(result);
@@ -14,15 +14,15 @@ module.exports = function(app, db) {
   });
 
   //READ temp
-  app.get('/presensi-forum-bidikmisi/all' , (req, res) => {
-    db.collection('presensi-forum-bidikmisi').find({}).toArray(function (err, result) {
+  app.get('/:collectionName/all' , (req, res) => {
+    db.collection(req.params.collectionName).find({}).toArray(function (err, result) {
       if (err) throw err;
       res.json(result);
     });
   });
   
-  app.get('/presensi-forum-bidikmisi/total' , (req, res) => {
-    db.collection('presensi-forum-bidikmisi').find({}).toArray(function (err, result) {
+  app.get('/:collectionName/total' , (req, res) => {
+    db.collection(req.params.collectionName).find({}).toArray(function (err, result) {
       if (err) throw err;
 
       var list_jurusan = {
@@ -137,12 +137,12 @@ module.exports = function(app, db) {
 
       res.json({"data": result, "rekap": rekap_jurusan});
       console.log("RESULT: " +JSON.stringify(result));
-      console.log("REKAP: " +JSON.stringify(rekap_jurusan));
+      // console.log("REKAP: " +JSON.stringify(rekap_jurusan));
     });
   });
   
   app.get('/is-checked-in/:nim' , (req, res) => {
-    db.collection('presensi-forum-bidikmisi').find({ nim: req.params.nim }).toArray(function (err, result) {
+    db.collection(req.params.collectionName).find({ nim: req.params.nim }).toArray(function (err, result) {
       if (err) throw err;
       var _data = {
         found: !(result.length == 0),
@@ -155,19 +155,19 @@ module.exports = function(app, db) {
     });
   });
   
-  app.get('/presensi-forum-bidikmisi/:id' , (req, res) => {
+  app.get('/:collectionName/:id' , (req, res) => {
     const temp = { '_id': new ObjectID(req.params.id) };
-    db.collection('presensi-forum-bidikmisi').find(temp).toArray(function (err, result) {
+    db.collection(req.params.collectionName).find(temp).toArray(function (err, result) {
       if (err) throw err;
       res.json(result);
     });
   });
 
-  app.put('/presensi-forum-bidikmisi/:id', (req, res) => {
+  app.put('/:collectionName/:id', (req, res) => {
     const id = req.params.id;
     const details = { '_id': new ObjectID(id) };
     const data = req.body
-    db.collection('presensi-forum-bidikmisi').update(
+    db.collection(req.params.collectionName).update(
       details,
       data,
       (err, result) => {
@@ -177,17 +177,17 @@ module.exports = function(app, db) {
   });
 
   //DELETE temp
-  app.delete('/presensi-forum-bidikmisi/all', (req, res) => {
-    const note = db.collection('presensi-forum-bidikmisi').remove({}, function (err, result) {
+  app.delete('/:collectionName/all', (req, res) => {
+    const note = db.collection(req.params.collectionName).remove({}, function (err, result) {
       if (err) throw err;
       res.json(result);
     });
   });
 
-  app.delete('/presensi-forum-bidikmisi/:id', (req, res) => {
+  app.delete('/:collectionName/:id', (req, res) => {
     const temp = { '_id': new ObjectID(req.params.id) };
 
-    const note = db.collection('presensi-forum-bidikmisi').remove(temp, function (err, result) {
+    const note = db.collection(req.params.collectionName).remove(temp, function (err, result) {
       if (err) throw err;
       res.json(result);
     });
@@ -198,9 +198,9 @@ module.exports = function(app, db) {
     res.send("Hello, Presensi KM-ITB!");
   });
 
-  app.get('/:nama', (req, res) => {
-    var nama = req.params.nama;
+  // app.get('/:nama', (req, res) => {
+  //   var nama = req.params.nama;
 
-    res.send("Hello, " + nama + "!");
-  });
+  //   res.send("Hello, " + nama + "!");
+  // });
 };
